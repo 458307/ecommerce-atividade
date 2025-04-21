@@ -1,20 +1,19 @@
 package com.unicesumar.entities;
 
-import java.util.UUID;
-
 public class User extends Entity {
     private String name;
     private String email;
     private String password;
 
     public User(String name, String email, String password) {
+        super();
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
-    public User(UUID uuid, String name, String email, String password) {
-        super(uuid);
+    public User(int id, String name, String email, String password) {
+        super(id);
         this.name = name;
         this.email = email;
         this.password = password;
@@ -32,6 +31,7 @@ public class User extends Entity {
         return password;
     }
 
+    @Override
     public String toString() {
         return String.format("%s - %s", this.name, this.email);
     }

@@ -1,19 +1,20 @@
 package com.unicesumar.entities;
 
-import java.util.UUID;
-
-public abstract class Entity {
-    private UUID uuid;
+public class Entity {
+    private int id;
 
     public Entity() {
-        this.uuid = UUID.randomUUID();
     }
 
-    public Entity(UUID uuid) {
-        this.uuid = uuid;
+    public Entity(int id) {
+        this.id = id;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

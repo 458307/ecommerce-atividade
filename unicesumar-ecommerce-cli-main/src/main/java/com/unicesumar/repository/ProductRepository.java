@@ -6,7 +6,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Optional;
+import java.util.List;
+import java.util.LinkedList;
 
 public class ProductRepository implements EntityRepository<Product> {
     private final Connection connection;
@@ -17,75 +19,68 @@ public class ProductRepository implements EntityRepository<Product> {
 
     @Override
     public void save(Product entity) {
-        String query = "INSERT INTO products VALUES (?, ?, ?)";
-        try {
-            PreparedStatement stmt = this.connection.prepareStatement(query);
-            stmt.setString(1, entity.getUuid().toString());
-            stmt.setString(2, entity.getName());
-            stmt.setDouble(3, entity.getPrice());
+        String query = "INSERT INTO Product (name, price) VALUES (?, ?)";
+        try (PreparedStatement stmt = this.connection.prepareStatement(query)) {
+            stmt.setString(1, entity.getName());
+            stmt.setDouble(2, entity.getPrice());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao salvar produto: " + e.getMessage());
         }
     }
 
     @Override
-    public Optional<Product> findById(UUID id) {
-        String query = "SELECT * FROM products WHERE uuid = ?";
-        try {
-            PreparedStatement stmt = this.connection.prepareStatement(query);
-            stmt.setString(1, id.toString());
+    public Optional<Product> findById(int id) {
+        String query = "SELECT * FROM Product WHERE id = ?";
+        try (PreparedStatement stmt = this.connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
             ResultSet resultSet = stmt.executeQuery();
 
             if (resultSet.next()) {
                 Product product = new Product(
-                        UUID.fromString(resultSet.getString("uuid")),
-                        resultSet.getString("name"),
-                        resultSet.getDouble("price")
+                    resultSet.getInt("id"),
+                    resultSet.getString("name"),
+                    resultSet.getDouble("price")
                 );
                 return Optional.of(product);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao buscar produto: " + e.getMessage());
         }
 
         return Optional.empty();
-
     }
 
     @Override
     public List<Product> findAll() {
-        String query = "SELECT * FROM products";
+        String query = "SELECT * FROM Product";
         List<Product> products = new LinkedList<>();
-        try {
-            PreparedStatement stmt = this.connection.prepareStatement(query);
+        try (PreparedStatement stmt = this.connection.prepareStatement(query)) {
             ResultSet resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
                 Product product = new Product(
-                        UUID.fromString(resultSet.getString("uuid")),
-                        resultSet.getString("name"),
-                        resultSet.getDouble("price")
+                    resultSet.getInt("id"),
+                    resultSet.getString("name"),
+                    resultSet.getDouble("price")
                 );
                 products.add(product);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao listar produtos: " + e.getMessage());
         }
         return products;
-
     }
 
     @Override
-    public void deleteById(UUID id) {
-        String query = "DELETE FROM products WHERE uuid = ?";
-        try {
-            PreparedStatement stmt = this.connection.prepareStatement(query);
-            stmt.setString(1, id.toString());
+    public void deleteById(int id) {
+        String query = "DELETE FROM Product WHERE id = ?";
+        try (PreparedStatement stmt = this.connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
             stmt.executeUpdate();
+            System.out.println("Produto deletado com sucesso!");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao deletar produto: " + e.getMessage());
         }
-
     }
 }

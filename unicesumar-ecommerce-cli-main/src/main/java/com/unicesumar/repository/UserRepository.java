@@ -116,4 +116,4 @@ public class UserRepository implements EntityRepository<User> {
             throw new RuntimeException("Erro ao registrar venda: " + e.getMessage());
         }
     }
-}
+} 

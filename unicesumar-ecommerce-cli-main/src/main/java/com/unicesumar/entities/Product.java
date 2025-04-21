@@ -1,13 +1,14 @@
 package com.unicesumar.entities;
 
-import java.util.UUID;
+public class Product {
+    private int id;
+    private String name;
+    private double price;
 
-public class Product extends Entity {
-    private final String name;
-    private final double price;
+    public Product() {}
 
-    public Product(UUID uuid, String name, double price) {
-        super(uuid);
+    public Product(int id, String name, double price) {
+        this.id = id;
         this.name = name;
         this.price = price;
     }
@@ -17,15 +18,32 @@ public class Product extends Entity {
         this.price = price;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
-        return this.name;
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getPrice() {
-        return this.price;
+        return price;
     }
 
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    @Override
     public String toString() {
-        return String.format("%s - %s", this.name, this.price);
+        return String.format("ID: %d | Nome: %s | Preço: R$ %.2f", id, name, price);
     }
 }
